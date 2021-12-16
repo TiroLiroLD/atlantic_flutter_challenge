@@ -78,31 +78,49 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: () async {
                             setState(() => showSpinner = true);
                             await findCep();
-                            setState(() {
-                              showSpinner = false;
-                            });
+                            setState(() => showSpinner = false);
                           },
                           icon: Icon(Icons.search))),
                 ),
-
-                //,
-                Text(
-                  'Cep: $_addressCep',
-                ),
-                Text(
-                  'Estado: $_addressState',
-                ),
-                Text(
-                  'Cidade: $_addressCity',
-                ),
-                Text(
-                  'Bairro: $_addressNeighborhood',
-                ),
-                Text(
-                  'Rua: $_addressStreet',
-                ),
-                Text(
-                  'serviço: $_addressService',
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Cep: $_addressCep',
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Estado: $_addressState',
+                                ),
+                                Text(
+                                  'Cidade: $_addressCity',
+                                ),
+                              ],
+                            ),
+                            Text(
+                              'Rua: $_addressStreet',
+                            ),
+                            Text(
+                              'Bairro: $_addressNeighborhood',
+                            ),
+                            Text(
+                              'serviço: $_addressService',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -111,7 +129,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          setState(() => showSpinner = true);
           if (_isValid) {
             Response response = await getCep(_inputCep);
             setState(() {
@@ -154,8 +171,17 @@ class _MyHomePageState extends State<MyHomePage> {
           _addressService = addressMap["service"] as String;
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("CEP $_inputCep não encontrado")));
-      } 
+        setState(() {
+          _addressCep = "";
+          _addressState = "";
+          _addressCity = "";
+          _addressNeighborhood = "";
+          _addressStreet = "";
+          _addressService = "";
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("CEP $_inputCep não encontrado")));
+      }
     }
   }
 }
