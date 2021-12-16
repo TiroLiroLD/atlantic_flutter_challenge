@@ -16,11 +16,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Busca CEP',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Busca CEP'),
     );
   }
 }
@@ -46,7 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   //Form control
   String _inputCep = "";
   bool _isValid = false;
-  bool showSpinner = false;
+  bool _showSpinner = false;
+  bool _showCard = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
+        inAsyncCall: _showSpinner,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
@@ -76,13 +77,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       hintText: 'Enter a search term',
                       suffixIcon: IconButton(
                           onPressed: () async {
-                            setState(() => showSpinner = true);
+                            setState(() => _showSpinner = true);
                             await findCep();
-                            setState(() => showSpinner = false);
+                            setState(() => _showSpinner = false);
                           },
                           icon: Icon(Icons.search))),
                 ),
-                Column(
+                (_showCard) ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -121,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ],
-                ),
+                ) : Column(),
               ],
             ),
           ),
@@ -141,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
               _addressService = addressMap["service"] as String;
             });
           }
-          setState(() => showSpinner = false);
+          setState(() => _showSpinner = false);
         },
       ),
     );
@@ -169,9 +170,11 @@ class _MyHomePageState extends State<MyHomePage> {
           _addressNeighborhood = addressMap["neighborhood"] as String;
           _addressStreet = addressMap["street"] as String;
           _addressService = addressMap["service"] as String;
+          _showCard = true;
         });
       } else {
         setState(() {
+          _showCard = false;
           _addressCep = "";
           _addressState = "";
           _addressCity = "";
